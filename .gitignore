@@ -1,0 +1,15 @@
+node_modules/
+
+
+.env
+.env.*
+
+
+dist/
+build/
+
+.vscode/
+.idea/
+
+
+
