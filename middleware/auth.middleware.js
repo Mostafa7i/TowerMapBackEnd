@@ -26,7 +26,7 @@ const AuthProduct = async(req , res , next) =>{
 
         req.user = {
             id : user._id,
-            role : user.role,
+            isAdmin : user.isAdmin,
             fullName : user.fullName,
             email : user.email
         }

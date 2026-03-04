@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "history": [
+    {
+      "version": 1,
+      "f1": 1,
+      "accuracy": 1,
+      "trainedAt": "2026-03-04T08:52:21.407Z"
+    },
+    {
+      "version": 2,
+      "f1": 0.9391,
+      "accuracy": 0.9451,
+      "trainedAt": "2026-03-04T09:20:01.678Z"
+    }
+  ],
+  "trainedAt": "2026-03-04T09:20:01.678Z",
+  "samples": 510,
+  "augmented": 510,
+  "epochs": 33,
+  "threshold": 0.45,
+  "f1": 0.9391,
+  "precision": 0.9,
+  "recall": 0.9818,
+  "specificity": 0.9172,
+  "accuracy": 0.9451,
+  "featureDim": 22
+}

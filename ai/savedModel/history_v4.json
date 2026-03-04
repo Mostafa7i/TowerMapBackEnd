@@ -1,0 +1,866 @@
+[
+  {
+    "model": "modelA",
+    "epoch": 1,
+    "loss": 0.75299,
+    "acc": 0,
+    "valLoss": 0.38748,
+    "valAcc": null,
+    "lr": 0.000005
+  },
+  {
+    "model": "modelA",
+    "epoch": 2,
+    "loss": 0.71312,
+    "acc": 0,
+    "valLoss": 0.36854,
+    "valAcc": null,
+    "lr": 0.0000879
+  },
+  {
+    "model": "modelA",
+    "epoch": 3,
+    "loss": 0.69699,
+    "acc": 0,
+    "valLoss": 0.34096,
+    "valAcc": null,
+    "lr": 0.0001708
+  },
+  {
+    "model": "modelA",
+    "epoch": 4,
+    "loss": 0.67974,
+    "acc": 0,
+    "valLoss": 0.3175,
+    "valAcc": null,
+    "lr": 0.0002538
+  },
+  {
+    "model": "modelA",
+    "epoch": 5,
+    "loss": 0.63414,
+    "acc": 0,
+    "valLoss": 0.30533,
+    "valAcc": null,
+    "lr": 0.0003367
+  },
+  {
+    "model": "modelA",
+    "epoch": 6,
+    "loss": 0.64708,
+    "acc": 0,
+    "valLoss": 0.29916,
+    "valAcc": null,
+    "lr": 0.0004196
+  },
+  {
+    "model": "modelA",
+    "epoch": 7,
+    "loss": 0.64196,
+    "acc": 0,
+    "valLoss": 0.29945,
+    "valAcc": null,
+    "lr": 0.0005025
+  },
+  {
+    "model": "modelA",
+    "epoch": 8,
+    "loss": 0.62664,
+    "acc": 0,
+    "valLoss": 0.29811,
+    "valAcc": null,
+    "lr": 0.0005854
+  },
+  {
+    "model": "modelA",
+    "epoch": 9,
+    "loss": 0.61967,
+    "acc": 0,
+    "valLoss": 0.29872,
+    "valAcc": null,
+    "lr": 0.0006683
+  },
+  {
+    "model": "modelA",
+    "epoch": 10,
+    "loss": 0.61601,
+    "acc": 0,
+    "valLoss": 0.30254,
+    "valAcc": null,
+    "lr": 0.0007512
+  },
+  {
+    "model": "modelA",
+    "epoch": 11,
+    "loss": 0.62766,
+    "acc": 0,
+    "valLoss": 0.30578,
+    "valAcc": null,
+    "lr": 0.0008342
+  },
+  {
+    "model": "modelA",
+    "epoch": 12,
+    "loss": 0.6086,
+    "acc": 0,
+    "valLoss": 0.307,
+    "valAcc": null,
+    "lr": 0.0009171
+  },
+  {
+    "model": "modelA",
+    "epoch": 13,
+    "loss": 0.58988,
+    "acc": 0,
+    "valLoss": 0.30679,
+    "valAcc": null,
+    "lr": 0.001
+  },
+  {
+    "model": "modelA",
+    "epoch": 14,
+    "loss": 0.6008,
+    "acc": 0,
+    "valLoss": 0.30603,
+    "valAcc": null,
+    "lr": 0.0009999
+  },
+  {
+    "model": "modelA",
+    "epoch": 15,
+    "loss": 0.59158,
+    "acc": 0,
+    "valLoss": 0.30558,
+    "valAcc": null,
+    "lr": 0.0009995
+  },
+  {
+    "model": "modelA",
+    "epoch": 16,
+    "loss": 0.58511,
+    "acc": 0,
+    "valLoss": 0.3088,
+    "valAcc": null,
+    "lr": 0.0009988
+  },
+  {
+    "model": "modelA",
+    "epoch": 17,
+    "loss": 0.57208,
+    "acc": 0,
+    "valLoss": 0.30985,
+    "valAcc": null,
+    "lr": 0.0009979
+  },
+  {
+    "model": "modelA",
+    "epoch": 18,
+    "loss": 0.57012,
+    "acc": 0,
+    "valLoss": 0.31047,
+    "valAcc": null,
+    "lr": 0.0009968
+  },
+  {
+    "model": "modelA",
+    "epoch": 19,
+    "loss": 0.56468,
+    "acc": 0,
+    "valLoss": 0.31033,
+    "valAcc": null,
+    "lr": 0.0009954
+  },
+  {
+    "model": "modelA",
+    "epoch": 20,
+    "loss": 0.5646,
+    "acc": 0,
+    "valLoss": 0.31054,
+    "valAcc": null,
+    "lr": 0.0009937
+  },
+  {
+    "model": "modelA",
+    "epoch": 21,
+    "loss": 0.55713,
+    "acc": 0,
+    "valLoss": 0.31042,
+    "valAcc": null,
+    "lr": 0.0009918
+  },
+  {
+    "model": "modelA",
+    "epoch": 22,
+    "loss": 0.55287,
+    "acc": 0,
+    "valLoss": 0.31128,
+    "valAcc": null,
+    "lr": 0.0009896
+  },
+  {
+    "model": "modelA",
+    "epoch": 23,
+    "loss": 0.54284,
+    "acc": 0,
+    "valLoss": 0.31355,
+    "valAcc": null,
+    "lr": 0.0009872
+  },
+  {
+    "model": "modelA",
+    "epoch": 24,
+    "loss": 0.54082,
+    "acc": 0,
+    "valLoss": 0.31381,
+    "valAcc": null,
+    "lr": 0.0009845
+  },
+  {
+    "model": "modelA",
+    "epoch": 25,
+    "loss": 0.54008,
+    "acc": 0,
+    "valLoss": 0.31293,
+    "valAcc": null,
+    "lr": 0.0009816
+  },
+  {
+    "model": "modelA",
+    "epoch": 26,
+    "loss": 0.52352,
+    "acc": 0,
+    "valLoss": 0.31443,
+    "valAcc": null,
+    "lr": 0.0009784
+  },
+  {
+    "model": "modelA",
+    "epoch": 27,
+    "loss": 0.52678,
+    "acc": 0,
+    "valLoss": 0.31152,
+    "valAcc": null,
+    "lr": 0.0009749
+  },
+  {
+    "model": "modelA",
+    "epoch": 28,
+    "loss": 0.52891,
+    "acc": 0,
+    "valLoss": 0.31259,
+    "valAcc": null,
+    "lr": 0.0009713
+  },
+  {
+    "model": "modelA",
+    "epoch": 29,
+    "loss": 0.52423,
+    "acc": 0,
+    "valLoss": 0.31167,
+    "valAcc": null,
+    "lr": 0.0009674
+  },
+  {
+    "model": "modelA",
+    "epoch": 30,
+    "loss": 0.51138,
+    "acc": 0,
+    "valLoss": 0.31492,
+    "valAcc": null,
+    "lr": 0.0009632
+  },
+  {
+    "model": "modelA",
+    "epoch": 31,
+    "loss": 0.51668,
+    "acc": 0,
+    "valLoss": 0.31942,
+    "valAcc": null,
+    "lr": 0.0009588
+  },
+  {
+    "model": "modelA",
+    "epoch": 32,
+    "loss": 0.51253,
+    "acc": 0,
+    "valLoss": 0.3198,
+    "valAcc": null,
+    "lr": 0.0009542
+  },
+  {
+    "model": "modelA",
+    "epoch": 33,
+    "loss": 0.50508,
+    "acc": 0,
+    "valLoss": 0.31572,
+    "valAcc": null,
+    "lr": 0.0009493
+  },
+  {
+    "model": "modelB",
+    "epoch": 1,
+    "loss": 0.49609,
+    "acc": 0,
+    "valLoss": 0.39858,
+    "valAcc": null,
+    "lr": 0.000005
+  },
+  {
+    "model": "modelB",
+    "epoch": 2,
+    "loss": 0.47656,
+    "acc": 0,
+    "valLoss": 0.34328,
+    "valAcc": null,
+    "lr": 0.0000879
+  },
+  {
+    "model": "modelB",
+    "epoch": 3,
+    "loss": 0.44917,
+    "acc": 0,
+    "valLoss": 0.30236,
+    "valAcc": null,
+    "lr": 0.0001708
+  },
+  {
+    "model": "modelB",
+    "epoch": 4,
+    "loss": 0.43235,
+    "acc": 0,
+    "valLoss": 0.28977,
+    "valAcc": null,
+    "lr": 0.0002538
+  },
+  {
+    "model": "modelB",
+    "epoch": 5,
+    "loss": 0.43112,
+    "acc": 0,
+    "valLoss": 0.28411,
+    "valAcc": null,
+    "lr": 0.0003367
+  },
+  {
+    "model": "modelB",
+    "epoch": 6,
+    "loss": 0.42299,
+    "acc": 0,
+    "valLoss": 0.29492,
+    "valAcc": null,
+    "lr": 0.0004196
+  },
+  {
+    "model": "modelB",
+    "epoch": 7,
+    "loss": 0.42222,
+    "acc": 0,
+    "valLoss": 0.29331,
+    "valAcc": null,
+    "lr": 0.0005025
+  },
+  {
+    "model": "modelB",
+    "epoch": 8,
+    "loss": 0.41441,
+    "acc": 0,
+    "valLoss": 0.2898,
+    "valAcc": null,
+    "lr": 0.0005854
+  },
+  {
+    "model": "modelB",
+    "epoch": 9,
+    "loss": 0.41403,
+    "acc": 0,
+    "valLoss": 0.29458,
+    "valAcc": null,
+    "lr": 0.0006683
+  },
+  {
+    "model": "modelB",
+    "epoch": 10,
+    "loss": 0.40925,
+    "acc": 0,
+    "valLoss": 0.29236,
+    "valAcc": null,
+    "lr": 0.0007512
+  },
+  {
+    "model": "modelB",
+    "epoch": 11,
+    "loss": 0.4065,
+    "acc": 0,
+    "valLoss": 0.29709,
+    "valAcc": null,
+    "lr": 0.0008342
+  },
+  {
+    "model": "modelB",
+    "epoch": 12,
+    "loss": 0.40369,
+    "acc": 0,
+    "valLoss": 0.29602,
+    "valAcc": null,
+    "lr": 0.0009171
+  },
+  {
+    "model": "modelB",
+    "epoch": 13,
+    "loss": 0.40137,
+    "acc": 0,
+    "valLoss": 0.29958,
+    "valAcc": null,
+    "lr": 0.001
+  },
+  {
+    "model": "modelB",
+    "epoch": 14,
+    "loss": 0.40265,
+    "acc": 0,
+    "valLoss": 0.29503,
+    "valAcc": null,
+    "lr": 0.0009999
+  },
+  {
+    "model": "modelB",
+    "epoch": 15,
+    "loss": 0.40254,
+    "acc": 0,
+    "valLoss": 0.2951,
+    "valAcc": null,
+    "lr": 0.0009995
+  },
+  {
+    "model": "modelB",
+    "epoch": 16,
+    "loss": 0.3971,
+    "acc": 0,
+    "valLoss": 0.30868,
+    "valAcc": null,
+    "lr": 0.0009988
+  },
+  {
+    "model": "modelB",
+    "epoch": 17,
+    "loss": 0.39702,
+    "acc": 0,
+    "valLoss": 0.29472,
+    "valAcc": null,
+    "lr": 0.0009979
+  },
+  {
+    "model": "modelB",
+    "epoch": 18,
+    "loss": 0.39364,
+    "acc": 0,
+    "valLoss": 0.3034,
+    "valAcc": null,
+    "lr": 0.0009968
+  },
+  {
+    "model": "modelB",
+    "epoch": 19,
+    "loss": 0.38938,
+    "acc": 0,
+    "valLoss": 0.29989,
+    "valAcc": null,
+    "lr": 0.0009954
+  },
+  {
+    "model": "modelB",
+    "epoch": 20,
+    "loss": 0.38669,
+    "acc": 0,
+    "valLoss": 0.29767,
+    "valAcc": null,
+    "lr": 0.0009937
+  },
+  {
+    "model": "modelB",
+    "epoch": 21,
+    "loss": 0.38533,
+    "acc": 0,
+    "valLoss": 0.30274,
+    "valAcc": null,
+    "lr": 0.0009918
+  },
+  {
+    "model": "modelB",
+    "epoch": 22,
+    "loss": 0.38683,
+    "acc": 0,
+    "valLoss": 0.29729,
+    "valAcc": null,
+    "lr": 0.0009896
+  },
+  {
+    "model": "modelB",
+    "epoch": 23,
+    "loss": 0.38302,
+    "acc": 0,
+    "valLoss": 0.30467,
+    "valAcc": null,
+    "lr": 0.0009872
+  },
+  {
+    "model": "modelB",
+    "epoch": 24,
+    "loss": 0.38102,
+    "acc": 0,
+    "valLoss": 0.30485,
+    "valAcc": null,
+    "lr": 0.0009845
+  },
+  {
+    "model": "modelB",
+    "epoch": 25,
+    "loss": 0.3802,
+    "acc": 0,
+    "valLoss": 0.30925,
+    "valAcc": null,
+    "lr": 0.0009816
+  },
+  {
+    "model": "modelB",
+    "epoch": 26,
+    "loss": 0.38408,
+    "acc": 0,
+    "valLoss": 0.30367,
+    "valAcc": null,
+    "lr": 0.0009784
+  },
+  {
+    "model": "modelB",
+    "epoch": 27,
+    "loss": 0.38484,
+    "acc": 0,
+    "valLoss": 0.30255,
+    "valAcc": null,
+    "lr": 0.0009749
+  },
+  {
+    "model": "modelB",
+    "epoch": 28,
+    "loss": 0.38064,
+    "acc": 0,
+    "valLoss": 0.30696,
+    "valAcc": null,
+    "lr": 0.0009713
+  },
+  {
+    "model": "modelB",
+    "epoch": 29,
+    "loss": 0.38065,
+    "acc": 0,
+    "valLoss": 0.30043,
+    "valAcc": null,
+    "lr": 0.0009674
+  },
+  {
+    "model": "modelB",
+    "epoch": 30,
+    "loss": 0.37885,
+    "acc": 0,
+    "valLoss": 0.303,
+    "valAcc": null,
+    "lr": 0.0009632
+  },
+  {
+    "model": "modelC",
+    "epoch": 1,
+    "loss": 0.49629,
+    "acc": 0,
+    "valLoss": 0.41198,
+    "valAcc": null,
+    "lr": 0.000005
+  },
+  {
+    "model": "modelC",
+    "epoch": 2,
+    "loss": 0.48025,
+    "acc": 0,
+    "valLoss": 0.37664,
+    "valAcc": null,
+    "lr": 0.0000879
+  },
+  {
+    "model": "modelC",
+    "epoch": 3,
+    "loss": 0.44487,
+    "acc": 0,
+    "valLoss": 0.33173,
+    "valAcc": null,
+    "lr": 0.0001708
+  },
+  {
+    "model": "modelC",
+    "epoch": 4,
+    "loss": 0.4155,
+    "acc": 0,
+    "valLoss": 0.3061,
+    "valAcc": null,
+    "lr": 0.0002538
+  },
+  {
+    "model": "modelC",
+    "epoch": 5,
+    "loss": 0.41193,
+    "acc": 0,
+    "valLoss": 0.29337,
+    "valAcc": null,
+    "lr": 0.0003367
+  },
+  {
+    "model": "modelC",
+    "epoch": 6,
+    "loss": 0.39082,
+    "acc": 0,
+    "valLoss": 0.28863,
+    "valAcc": null,
+    "lr": 0.0004196
+  },
+  {
+    "model": "modelC",
+    "epoch": 7,
+    "loss": 0.38346,
+    "acc": 0,
+    "valLoss": 0.28925,
+    "valAcc": null,
+    "lr": 0.0005025
+  },
+  {
+    "model": "modelC",
+    "epoch": 8,
+    "loss": 0.37332,
+    "acc": 0,
+    "valLoss": 0.28625,
+    "valAcc": null,
+    "lr": 0.0005854
+  },
+  {
+    "model": "modelC",
+    "epoch": 9,
+    "loss": 0.37397,
+    "acc": 0,
+    "valLoss": 0.29026,
+    "valAcc": null,
+    "lr": 0.0006683
+  },
+  {
+    "model": "modelC",
+    "epoch": 10,
+    "loss": 0.3747,
+    "acc": 0,
+    "valLoss": 0.28772,
+    "valAcc": null,
+    "lr": 0.0007512
+  },
+  {
+    "model": "modelC",
+    "epoch": 11,
+    "loss": 0.36458,
+    "acc": 0,
+    "valLoss": 0.29193,
+    "valAcc": null,
+    "lr": 0.0008342
+  },
+  {
+    "model": "modelC",
+    "epoch": 12,
+    "loss": 0.36572,
+    "acc": 0,
+    "valLoss": 0.29372,
+    "valAcc": null,
+    "lr": 0.0009171
+  },
+  {
+    "model": "modelC",
+    "epoch": 13,
+    "loss": 0.3594,
+    "acc": 0,
+    "valLoss": 0.29473,
+    "valAcc": null,
+    "lr": 0.001
+  },
+  {
+    "model": "modelC",
+    "epoch": 14,
+    "loss": 0.35741,
+    "acc": 0,
+    "valLoss": 0.29644,
+    "valAcc": null,
+    "lr": 0.0009999
+  },
+  {
+    "model": "modelC",
+    "epoch": 15,
+    "loss": 0.36055,
+    "acc": 0,
+    "valLoss": 0.30376,
+    "valAcc": null,
+    "lr": 0.0009995
+  },
+  {
+    "model": "modelC",
+    "epoch": 16,
+    "loss": 0.35461,
+    "acc": 0,
+    "valLoss": 0.29908,
+    "valAcc": null,
+    "lr": 0.0009988
+  },
+  {
+    "model": "modelC",
+    "epoch": 17,
+    "loss": 0.35636,
+    "acc": 0,
+    "valLoss": 0.30052,
+    "valAcc": null,
+    "lr": 0.0009979
+  },
+  {
+    "model": "modelC",
+    "epoch": 18,
+    "loss": 0.35371,
+    "acc": 0,
+    "valLoss": 0.30277,
+    "valAcc": null,
+    "lr": 0.0009968
+  },
+  {
+    "model": "modelC",
+    "epoch": 19,
+    "loss": 0.35158,
+    "acc": 0,
+    "valLoss": 0.30174,
+    "valAcc": null,
+    "lr": 0.0009954
+  },
+  {
+    "model": "modelC",
+    "epoch": 20,
+    "loss": 0.35846,
+    "acc": 0,
+    "valLoss": 0.29877,
+    "valAcc": null,
+    "lr": 0.0009937
+  },
+  {
+    "model": "modelC",
+    "epoch": 21,
+    "loss": 0.3552,
+    "acc": 0,
+    "valLoss": 0.30962,
+    "valAcc": null,
+    "lr": 0.0009918
+  },
+  {
+    "model": "modelC",
+    "epoch": 22,
+    "loss": 0.35198,
+    "acc": 0,
+    "valLoss": 0.30185,
+    "valAcc": null,
+    "lr": 0.0009896
+  },
+  {
+    "model": "modelC",
+    "epoch": 23,
+    "loss": 0.35542,
+    "acc": 0,
+    "valLoss": 0.30366,
+    "valAcc": null,
+    "lr": 0.0009872
+  },
+  {
+    "model": "modelC",
+    "epoch": 24,
+    "loss": 0.34971,
+    "acc": 0,
+    "valLoss": 0.30164,
+    "valAcc": null,
+    "lr": 0.0009845
+  },
+  {
+    "model": "modelC",
+    "epoch": 25,
+    "loss": 0.34941,
+    "acc": 0,
+    "valLoss": 0.30089,
+    "valAcc": null,
+    "lr": 0.0009816
+  },
+  {
+    "model": "modelC",
+    "epoch": 26,
+    "loss": 0.35288,
+    "acc": 0,
+    "valLoss": 0.30364,
+    "valAcc": null,
+    "lr": 0.0009784
+  },
+  {
+    "model": "modelC",
+    "epoch": 27,
+    "loss": 0.35157,
+    "acc": 0,
+    "valLoss": 0.29902,
+    "valAcc": null,
+    "lr": 0.0009749
+  },
+  {
+    "model": "modelC",
+    "epoch": 28,
+    "loss": 0.35547,
+    "acc": 0,
+    "valLoss": 0.30293,
+    "valAcc": null,
+    "lr": 0.0009713
+  },
+  {
+    "model": "modelC",
+    "epoch": 29,
+    "loss": 0.34454,
+    "acc": 0,
+    "valLoss": 0.3037,
+    "valAcc": null,
+    "lr": 0.0009674
+  },
+  {
+    "model": "modelC",
+    "epoch": 30,
+    "loss": 0.34284,
+    "acc": 0,
+    "valLoss": 0.30157,
+    "valAcc": null,
+    "lr": 0.0009632
+  },
+  {
+    "model": "modelC",
+    "epoch": 31,
+    "loss": 0.34557,
+    "acc": 0,
+    "valLoss": 0.30167,
+    "valAcc": null,
+    "lr": 0.0009588
+  },
+  {
+    "model": "modelC",
+    "epoch": 32,
+    "loss": 0.34602,
+    "acc": 0,
+    "valLoss": 0.30496,
+    "valAcc": null,
+    "lr": 0.0009542
+  },
+  {
+    "model": "modelC",
+    "epoch": 33,
+    "loss": 0.34443,
+    "acc": 0,
+    "valLoss": 0.30494,
+    "valAcc": null,
+    "lr": 0.0009493
+  }
+]
