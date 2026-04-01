@@ -3,6 +3,8 @@ const mongoose = require("mongoose")
 
 const connectDB = async() =>{
     try {
+        console.log("DB URL exists:", !!process.env.CONNECTDB_URL);
+console.log(process.env.CONNECTDB_URL?.slice(0, 30));
         await mongoose.connect(process.env.CONNECTDB_URL)
         console.log(`the database is connected Sccessfully🟢🟢🟢`)
     } catch (error) {
