@@ -17,20 +17,29 @@ cron.schedule("* * * * *", async () => {
                 const metrics = await getTowerMetrics(tower.ip_address);
 
                 // 3. تحديث البيانات في قاعدة البيانات
+                // لحماية المحاكي: لو الـ SNMP فشل ورجع 0 لأن البرج وهمي، نحافظ على قيمة المحاكي الحالية
+                const newThroughput = metrics.isOffline && tower.lastMeasurement?.throughput > 0 
+                  ? tower.lastMeasurement.throughput 
+                  : metrics.throughput;
+
+                const newTemp = metrics.isOffline && tower.lastMeasurement?.temperature > 0 
+                  ? tower.lastMeasurement.temperature 
+                  : metrics.temperature;
+
                 tower.lastMeasurement = {
                     ...tower.lastMeasurement,
-                    temperature: metrics.temperature,
-                    throughput: metrics.throughput,
+                    temperature: newTemp,
+                    throughput: newThroughput,
                     updatedAt: new Date()
                 };
                 await tower.save();
 
                 console.log(`Updated ${tower.TowerName}`);
 
-                // 4. نداء الـ AI API للتحليل بناءً على البيانات الجديدة
-                await axios.post("http://localhost:5000/api/ai/analyze", {
+                const baseUrl = process.env.CLIENT_URL || "http://localhost:5000";
+                await axios.post(`${baseUrl}/api/ai/analyze`, {
                     towerId: tower._id,
-                    // ... باقى البيانات
+                    stats: [metrics.latency, metrics.packetLoss, 2, metrics.throughput]
                 });
 
             } catch (snmpError) {
@@ -42,4 +51,4 @@ cron.schedule("* * * * *", async () => {
         console.error("Database error:", dbError.message);
     }
 });
-module.exports = { getTowerMetrics };
+module.exports = {};

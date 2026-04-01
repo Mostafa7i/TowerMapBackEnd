@@ -15,19 +15,21 @@
     "@tensorflow/tfjs": "^4.22.0",
     "axios": "^1.13.6",
     "bcryptjs": "^3.0.3",
-    "chart.js": "^4.5.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
-    "dotnet": "^1.1.4",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.1.0",
     "joi": "^18.0.2",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^7.6.0",
+    "morgan": "^1.10.1",
     "net-snmp": "^3.26.1",
     "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.1",
     "nodemon": "^3.1.11",
     "ping": "^1.0.0",
-    "react-chartjs-2": "^5.3.1"
+    "twilio": "^5.12.2"
   }
 }

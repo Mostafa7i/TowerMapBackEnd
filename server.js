@@ -4,6 +4,9 @@ const connectDB = require("./config/db");
 const cookie = require("cookie-parser");
 const cors = require("cors");
 const { monitorAndAnalyzeTowers } = require('./services/monitorService');
+const helmet = require("helmet");
+const morgan = require("morgan");
+const rateLimit = require("express-rate-limit");
 const app = express();
 
 // الاتصال بقاعدة البيانات
@@ -13,8 +16,21 @@ app.use(cookie());
 app.use(express.json());
 
 // Middlewares
+app.use(helmet());
+if (process.env.NODE_ENV !== 'production') {
+  app.use(morgan("dev"));
+}
+
+// Rate Limiting for Auth
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 50, // Limit each IP to 50 requests per windowMs
+  message: "❌ طلبات كثيرة جداً، يرجى المحاولة لاحقاً."
+});
+app.use("/api/auth", authLimiter);
+
 app.use(cors({
-  origin: true, 
+  origin: true,
   credentials: true
 }));
 
@@ -25,7 +41,18 @@ app.use("/api/ai", require("./routes/ai.route"));
 app.use("/api/towerMap", require("./routes/tower.route"));
 
 // اختبار  للتأكد أن السيرفر يعمل بعد الرفع
-app.get("/", (req, res) => res.send("Server is ready!"));
+app.get("/", (req, res) => res.json({ success: true, message: "Server is ready!" }));
+
+// 404 Route
+app.use((req, res, next) => {
+  res.status(404).json({ success: false, message: "❌ المسار غير موجود" });
+});
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error("Global Error:", err.stack);
+  res.status(500).json({ success: false, message: "❌ حدث خطأ في الخادم", error: err.message });
+});
 
 // تصدير التطبيق لـ Vercel
 module.exports = app;
@@ -40,12 +67,3 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-const snmp = require("net-snmp");
-const testSession = snmp.createSession("127.0.0.1", "public");
-testSession.get(["1.3.6.1.2.1.1.5.0"], (error, varbinds) => {
-    if (error) {
-        console.log("❌ SNMP TEST FAILED: " + error.message);
-    } else {
-        console.log("✅ SNMP TEST SUCCESS: " + varbinds[0].value);
-    }
-});

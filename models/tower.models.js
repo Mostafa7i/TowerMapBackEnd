@@ -16,13 +16,13 @@ const TowerSchema = new mongoose.Schema({
     },
     vendor: {
         type: String,
-        enum: ['Huawei', 'Cisco', 'Nokia', 'ZTE' , 'Samsung'],
+        enum: ['Huawei', 'Cisco', 'Nokia', 'ZTE', 'Samsung'],
         default: 'Cisco'
     },
     status: {
         type: String,
-        enum: ['normal', "warning", 'critcal', 'Safe', 'Danger'], 
-        default: "normal"
+        enum: ['safe', 'warning', 'critical', 'danger'],
+        default: 'safe'
     },
     lastMeasurement: {
         latency: Number,

@@ -3,40 +3,34 @@ const User = require("../models/user.models");
 
 
 
-const AuthProduct = async(req , res , next) =>{
-    let token ; 
-    
-    if(req.cookies && req.cookies.access_token){
-        token = req.cookies.access_token;
-    }else if(req.headers.authorization?.startsWith("Bearer")){
-        token = req.headers.authorization.split(" ")[1]
-    };
+exports.verifyToken = async (req, res, next) => {
+  try {
 
-    if(!token){
-        return res.status(401).json({message : "غير مصرح لك بالوصل!"})
+    let token;
+
+    if (req.cookies?.access_token) {
+      token = req.cookies.access_token;
+    } else if (req.headers.authorization?.startsWith("Bearer")) {
+      token = req.headers.authorization.split(" ")[1];
     }
 
-    try {
-        const decode = jwt.verify(token , process.env.JWT_SECRET)
-        const user = await User.findById(decode.id).select("-password")
-
-        if(!user){
-            return res.status(401).json({message : "المستخدم غير موجود"})
-        }
-
-        req.user = {
-            id : user._id,
-            isAdmin : user.isAdmin,
-            fullName : user.fullName,
-            email : user.email
-        }
-
-        next()
-    } catch (error) {
-        console.log(error)
-        return res.status(401).json({message : "التوكين غير صالح"})
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
 
-}
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-module.exports = AuthProduct
+    const user = await User.findById(decoded._id).select("-password");
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    req.user = user;
+
+    next();
+
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid token" });
+  }
+};

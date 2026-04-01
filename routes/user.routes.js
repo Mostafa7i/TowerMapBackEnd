@@ -1,17 +1,19 @@
 const express = require("express");
-const { regstier, login, checkMe, logOut, logout } = require("../controllers/user.control");
+const { register, login, checkMe, logout, updateMe, changePassword } = require("../controllers/user.control");
 const {
   registerValid,
   loginValid,
 } = require("../middleware/userVlidation.middleware");
-const AuthProduct = require("../middleware/auth.middleware");
+const { verifyToken } = require("../middleware/auth.middleware");
 
 const router = express.Router();
 
-router.post("/register", registerValid, regstier);
-router.post("/login", loginValid, login);
-router.post("/logout",AuthProduct, logout);
-router.get("/checkMe", AuthProduct, checkMe);
+router.post("/register", registerValid, register);
+router.post("/login", login);
+router.post("/logout", logout);
+router.get("/checkMe", verifyToken, checkMe)
 
+router.patch("/updateMe", verifyToken, updateMe)
+router.patch("/changePassword", verifyToken, changePassword)
 
 module.exports = router;

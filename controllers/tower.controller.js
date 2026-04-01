@@ -1,63 +1,64 @@
 const Tower = require('../models/tower.models');
 // استيراد خدمة المراقبة التي قمنا بإنشائها لربط الـ IP بالـ AI
-const { startMonitoringTower } = require('../services/monitorService');
+const monitorService = require('../services/monitorService');
+const ai = require('../ai/xorModel');
 
 exports.addTower = async (req, res) => {
-    try {
-        const { TowerName, ip_address, location, vendor } = req.body;
+  try {
+    const { TowerName, ip_address, location, vendor } = req.body;
 
-        // 1. تحقق مبدئي من البيانات
-        if (!TowerName || !ip_address || !location) {
-            return res.status(400).json({
-                success: false,
-                message: "يرجى ملء جميع الحقول الضرورية (الاسم، الـ IP، الموقع)"
-            });
-        }
-
-        // 2. إنشاء البرج في قاعدة البيانات
-        const newTower = new Tower({
-            TowerName,
-            ip_address,
-            location,
-            vendor,
-            status: 'Safe', // الحالة الافتراضية آمن
-            lastCheck: new Date()
-        });
-
-        await newTower.save();
-
-        // 3. --- الربط الذكي مع الـ AI ---
-        // إخبار خدمة المراقبة بوجود برج جديد للبدء في عمل Ping وتحليله
-        if (startMonitoringTower) {
-            startMonitoringTower(newTower);
-        }
-
-        res.status(201).json({
-            success: true,
-            message: "تم إضافة البرج بنجاح وبدء مراقبة الأداء!",
-            data: newTower
-        });
-
-    } catch (error) {
-        console.error("Error adding tower:", error);
-        res.status(500).json({
-            success: false,
-            message: "حدث خطأ في الخادم أثناء إضافة البرج"
-        });
+    // 1. تحقق مبدئي من البيانات
+    if (!TowerName || !ip_address || !location) {
+      return res.status(400).json({
+        success: false,
+        message: "يرجى ملء جميع الحقول الضرورية (الاسم، الـ IP، الموقع)"
+      });
     }
+
+    // 2. إنشاء البرج في قاعدة البيانات
+    const newTower = new Tower({
+      TowerName,
+      ip_address,
+      location,
+      vendor,
+      status: 'safe', // الحالة الافتراضية آمن
+      lastCheck: new Date()
+    });
+
+    await newTower.save();
+
+    // 3. --- الربط الذكي مع الـ AI ---
+    // إخبار خدمة المراقبة بوجود برج جديد للبدء في عمل Ping وتحليله
+    if (monitorService.startMonitoringTower) {
+      monitorService.startMonitoringTower(newTower);
+    }
+
+    res.status(201).json({
+      success: true,
+      message: "تم إضافة البرج بنجاح وبدء مراقبة الأداء!",
+      data: newTower
+    });
+
+  } catch (error) {
+    console.error("Error adding tower:", error);
+    res.status(500).json({
+      success: false,
+      message: "حدث خطأ في الخادم أثناء إضافة البرج"
+    });
+  }
 };
 
 
 exports.getTower = async (req, res) => {
-    try {
-        const towers = await Tower.find({});
-        if(!towers){
-            return  res.status(404).json({ message : 'لا يوجد ابراج' });
-        }
-        res.json({ success: true, data: towers });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "فشل في جلب الأبراج" });
+  try {
+    const towers = await Tower.find({});
+    if (!towers || towers.length === 0) {
+      return res.status(404).json({ message: 'لا يوجد ابراج' });
     }
+    res.json({ success: true, data: towers });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "فشل في جلب الأبراج" });
+  }
 }
 exports.getTowerById = async (req, res) => {
   try {
@@ -79,28 +80,113 @@ exports.updateTowerByIP = async (req, res) => {
   try {
     const { ip_address, latency, throughput, packetLoss, jitter } = req.body;
 
-    // التأكد من أن كل القيم أرقام صالحة، وإذا كانت NaN تتحول لـ 0
+    // 1. تنظيف الأرقام
     const cleanStats = {
-      latency: isNaN(latency) ? 0 : Number(latency),
+      latency:    isNaN(latency)    ? 0 : Number(latency),
       throughput: isNaN(throughput) ? 0 : Number(throughput),
       packetLoss: isNaN(packetLoss) ? 0 : Number(packetLoss),
-      jitter: isNaN(jitter) ? 0 : Number(jitter),
+      jitter:     isNaN(jitter)     ? 0 : Number(jitter),
     };
 
+    // 2. حساب الـ status الجديد فوراً بناءً على الأرقام
+    //    نفس المنطق اللي في monitorService
+    function computeStatus(m) {
+      if (m.latency > 300  || m.packetLoss > 15)  return 'danger';
+      if (m.latency >= 150 || m.packetLoss >= 10) return 'critical';
+      if (m.latency >= 80  || m.packetLoss >= 5)  return 'warning';
+      return 'safe';
+    }
+    const newStatus = computeStatus(cleanStats);
+
+    // 3. جلب البرج الحالي لمعرفة الـ status القديم (للإشعارات)
+    const existingTower = await Tower.findOne({ ip_address });
+    if (!existingTower) return res.status(404).json({ message: 'البرج غير موجود' });
+
+    const oldStatus = (existingTower.status || 'safe').toLowerCase();
+
+    // 4. تحديث الـ DB بالأرقام الجديدة + الـ status الجديد معاً
     const updatedTower = await Tower.findOneAndUpdate(
-      { ip_address: ip_address },
+      { ip_address },
       {
         lastMeasurement: cleanStats,
-        updatedAt: Date.now()
+        status:          newStatus,
+        lastCheck:       new Date(),
       },
       { new: true }
     );
 
-    if (!updatedTower) return res.status(404).json({ message: "البرج غير موجود" });
+    // 5. إرسال إشعار لو الحالة اتدهورت لـ critical أو danger
+    const SEVERITY = { safe: 0, warning: 1, critical: 2, danger: 3 };
+    const shouldNotify =
+      ['critical', 'danger'].includes(newStatus) &&
+      (SEVERITY[newStatus] ?? 0) > (SEVERITY[oldStatus] ?? 0);
 
-    res.status(200).json({ success: true, data: updatedTower });
+    if (shouldNotify) {
+      // لا ننتظر الإشعار عشان ما نأخرش الرسبونس
+      const { notifyAdmins } = require('../services/notification.service');
+      notifyAdmins(updatedTower, newStatus).catch(e =>
+        console.error('❌ فشل إرسال الإشعار:', e.message)
+      );
+    }
+
+    res.status(200).json({ success: true, data: updatedTower, newStatus });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+
+exports.deleteTower = async (req, res) => {
+  try {
+    const tower = await Tower.findByIdAndDelete(req.params.id);
+    if (!tower) {
+      return res.status(404).json({ success: false, message: 'البرج غير موجود' });
+    }
+    res.json({ success: true, message: 'تم حذف البرج بنجاح' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'خطأ في حذف البرج' });
+  }
+};
+
+exports.updateTower = async (req, res) => {
+  try {
+    const tower = await Tower.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    if (!tower) {
+      return res.status(404).json({ success: false, message: 'البرج غير موجود' });
+    }
+    res.json({ success: true, data: tower });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'خطأ في تحديث بيانات البرج' });
+  }
+};
+
+exports.analyzeTower = async (req, res) => {
+  try {
+    let { stats } = req.body;
+
+    let forceSafeStats = [
+      (stats && stats[0] > 0) ? stats[0] : 20,
+      (stats && stats[1] > 0) ? stats[1] : 0.001,
+      (stats && stats[2] > 0) ? stats[2] : 2,
+      (stats && stats[3] > 0) ? stats[3] : 100
+    ];
+
+    if (!stats || stats.length === 0) {
+      forceSafeStats = [20, 0.001, 2, 100];
+    }
+
+    const prediction = await ai.predict(forceSafeStats);
+
+    res.json({
+      success: true,
+      data: {
+        ...prediction,
+        isAnomaly: prediction.isAnomaly,
+        probability: prediction.probability
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
   }
 };
 
@@ -140,8 +226,8 @@ const {
 } = require("../ai/xorModel");
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-const ok  = (res, data, code = 200) => res.status(code).json({ success: true,  ...data });
-const err = (res, msg,  code = 400) => res.status(code).json({ success: false, error: msg });
+const ok = (res, data, code = 200) => res.status(code).json({ success: true, ...data });
+const err = (res, msg, code = 400) => res.status(code).json({ success: false, error: msg });
 
 /**
  * Validate & coerce a [lat, pl, jit, thr] input from any object shape.
@@ -153,9 +239,9 @@ function parseInput(raw) {
     return raw.slice(0, 4).map(Number);
   }
   if (typeof raw === "object" && raw !== null) {
-    const lat = parseFloat(raw.latency    ?? raw.lat ?? raw[0]);
-    const pl  = parseFloat(raw.packetLoss ?? raw.pl  ?? raw[1]);
-    const jit = parseFloat(raw.jitter     ?? raw.jit ?? raw[2]);
+    const lat = parseFloat(raw.latency ?? raw.lat ?? raw[0]);
+    const pl = parseFloat(raw.packetLoss ?? raw.pl ?? raw[1]);
+    const jit = parseFloat(raw.jitter ?? raw.jit ?? raw[2]);
     const thr = parseFloat(raw.throughput ?? raw.thr ?? raw[3]);
     if ([lat, pl, jit, thr].some(isNaN))
       throw new Error("Missing or invalid fields. Required: latency, packetLoss, jitter, throughput");
@@ -175,10 +261,10 @@ loadOrCreate().catch(e => console.error("[AI Controller] Init failed:", e));
  * POST /predict
  * Body: { input: [lat, pl, jit, thr] }  OR  { latency, packetLoss, jitter, throughput }
  */
-exports.predictOne = async(req, res) =>{
+exports.predictOne = async (req, res) => {
   try {
-    const raw    = req.body?.input ?? req.body;
-    const input  = parseInput(raw);
+    const raw = req.body?.input ?? req.body;
+    const input = parseInput(raw);
     const result = await predict(input);
 
     ok(res, {
@@ -199,7 +285,7 @@ exports.predictOne = async(req, res) =>{
  * Body: { inputs: [[lat,pl,jit,thr], ...] }
  *   OR: { inputs: [{latency,...}, ...] }
  */
-exports.predictBatchCtrl = async(req, res) => {
+exports.predictBatchCtrl = async (req, res) => {
   try {
     const { inputs } = req.body;
     if (!Array.isArray(inputs) || inputs.length === 0)
@@ -207,7 +293,7 @@ exports.predictBatchCtrl = async(req, res) => {
     if (inputs.length > 500)
       return err(res, "Batch size limit is 500.");
 
-    const parsed  = inputs.map((inp, i) => {
+    const parsed = inputs.map((inp, i) => {
       try { return parseInput(inp); }
       catch (e) { throw new Error(`Item at index ${i}: ${e.message}`); }
     });
@@ -215,12 +301,12 @@ exports.predictBatchCtrl = async(req, res) => {
     const results = await predictBatch(parsed);
 
     const summary = {
-      total:    results.length,
+      total: results.length,
       anomalies: results.filter(r => r.isAnomaly).length,
-      critical:  results.filter(r => r.riskLevel === "CRITICAL").length,
-      high:      results.filter(r => r.riskLevel === "HIGH").length,
-      medium:    results.filter(r => r.riskLevel === "MEDIUM").length,
-      low:       results.filter(r => r.riskLevel === "LOW").length,
+      critical: results.filter(r => r.riskLevel === "CRITICAL").length,
+      high: results.filter(r => r.riskLevel === "HIGH").length,
+      medium: results.filter(r => r.riskLevel === "MEDIUM").length,
+      low: results.filter(r => r.riskLevel === "LOW").length,
     };
 
     ok(res, { results, summary });
@@ -240,7 +326,7 @@ exports.predictBatchCtrl = async(req, res) => {
  *     options?: { epochs, lrMax, augment, targetRatio }
  *   }
  */
-exports.trainCtrl = async(req, res)  =>{
+exports.trainCtrl = async (req, res) => {
   try {
     const { data, options = {} } = req.body;
 
@@ -288,7 +374,7 @@ exports.trainCtrl = async(req, res)  =>{
  * Body: { options?: { epochs } }
  * Trains on synthetic baseline data (no real data needed).
  */
-exports.autoTrainCtrl = async(req, res) =>{
+exports.autoTrainCtrl = async (req, res) => {
   try {
     const { options = {} } = req.body || {};
 
@@ -313,16 +399,16 @@ exports.autoTrainCtrl = async(req, res) =>{
  * Adds a ground-truth sample to the online learning buffer.
  * Model auto-fine-tunes when buffer reaches 50 samples.
  */
-exports.feedbackCtrl = async(req, res)=> {
+exports.feedbackCtrl = async (req, res) => {
   try {
-    const raw       = req.body?.input ?? req.body;
+    const raw = req.body?.input ?? req.body;
     const isAnomaly = req.body?.isAnomaly ?? req.body?.label === 1;
 
-    const input  = parseInput(typeof isAnomaly !== "undefined" ? (req.body.input ?? raw) : raw);
+    const input = parseInput(typeof isAnomaly !== "undefined" ? (req.body.input ?? raw) : raw);
     const result = await updateOnline(input, Boolean(isAnomaly));
 
     ok(res, {
-      message:  result.status === "fine-tuned"
+      message: result.status === "fine-tuned"
         ? `Model fine-tuned after ${result.steps} steps.`
         : `Sample buffered (${result.count}/50). Model will fine-tune at 50.`,
       status: result.status,
@@ -337,27 +423,27 @@ exports.feedbackCtrl = async(req, res)=> {
  * GET /info
  * Returns full model status, version, performance metrics, and training history.
  */
-exports.infoCtrl = async(req, res) => {
+exports.infoCtrl = async (req, res) => {
   try {
     const info = getModelInfo();
     ok(res, {
       model: info,
       capabilities: {
         featureEngineering: true,
-        ensemble:           true,
-        onlineLearning:     true,
-        batchPrediction:    true,
-        autotrain:          true,
-        versionHistory:     true,
+        ensemble: true,
+        onlineLearning: true,
+        batchPrediction: true,
+        autotrain: true,
+        versionHistory: true,
       },
       endpoints: {
-        predict:      "POST /api/ai/predict",
+        predict: "POST /api/ai/predict",
         predictBatch: "POST /api/ai/predict/batch",
-        train:        "POST /api/ai/train",
-        autoTrain:    "POST /api/ai/train/auto",
-        feedback:     "POST /api/ai/feedback",
-        info:         "GET  /api/ai/info",
-        health:       "GET  /api/ai/health",
+        train: "POST /api/ai/train",
+        autoTrain: "POST /api/ai/train/auto",
+        feedback: "POST /api/ai/feedback",
+        info: "GET  /api/ai/info",
+        health: "GET  /api/ai/health",
       },
     });
   } catch (e) {
@@ -369,16 +455,16 @@ exports.infoCtrl = async(req, res) => {
  * GET /health
  * Lightweight liveness probe for load balancers / monitoring.
  */
-exports.healthCtrl = async(req, res)  =>{
+exports.healthCtrl = async (req, res) => {
   try {
-    const info   = getModelInfo();
+    const info = getModelInfo();
     const status = info.status === "READY" ? 200 : 503;
     res.status(status).json({
-      status:  info.status,
+      status: info.status,
       version: info.version,
-      uptime:  process.uptime().toFixed(1) + "s",
-      memory:  (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(1) + "MB",
-      ts:      new Date().toISOString(),
+      uptime: process.uptime().toFixed(1) + "s",
+      memory: (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(1) + "MB",
+      ts: new Date().toISOString(),
     });
   } catch {
     res.status(503).json({ status: "ERROR" });
@@ -390,7 +476,7 @@ exports.healthCtrl = async(req, res)  =>{
  * Resets the in-memory model to untrained state.
  * Does NOT delete files — use with caution.
  */
-exports.resetCtrl = async(req, res) => {
+exports.resetCtrl = async (req, res) => {
   try {
     // We re-export mutable state reset via a fresh require trick
     ok(res, { message: "Model reset in memory. Call /train/auto to retrain." });
@@ -398,13 +484,3 @@ exports.resetCtrl = async(req, res) => {
     err(res, e.message, 500);
   }
 }
-
-// ══════════════════════════════════════════════════════════════════════════════
-// ROUTER EXPORT  (Express)
-// ══════════════════════════════════════════════════════════════════════════════
-/**
- * Usage in app.js / index.js:
- *
- *   const aiRouter = require("./controllers/aiController");
- *   app.use("/api/ai", aiRouter);
- */

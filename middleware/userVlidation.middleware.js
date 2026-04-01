@@ -6,7 +6,7 @@ exports.registerValid = (req, res, next) => {
   });
   if (error) {
     return res.status(400).send({
-      message: "Validation Filed!",
+      message: "Validation Failed!",
       details: error.details.map((e) => e.message),
     });
   }
@@ -18,7 +18,7 @@ exports.loginValid = (req, res, next) => {
   });
   if (error) {
     return res.status(400).send({
-      message: "Validation Filed!",
+      message: "Validation Failed!",
       details: error.details.map((e) => e.message),
     });
   }

@@ -10,8 +10,8 @@ const snmp = require("net-snmp");
  * - true  => البرج شغال (بيانات سليمة).
  * - false => البرج واقع (بيانات كارثية عشان الـ AI يقلب Danger).
  */
-const SIMULATION_MODE = true;
-const TOWER_IS_ALIVE = true;
+const SIMULATION_MODE = false;
+const TOWER_IS_ALIVE = false;
 
 const getTowerMetrics = (towerIp) => {
   return new Promise((resolve, reject) => {
