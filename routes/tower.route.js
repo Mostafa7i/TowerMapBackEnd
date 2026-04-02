@@ -1,10 +1,10 @@
 const express = require('express');
-const { getTower, addTower, getTowerById, updateTowerByIP, deleteTower, updateTower } = require('../controllers/tower.controller');
+const { getTower, addTower, getTowerById, updateTowerByIP, deleteTower, updateTower, checkIpExists } = require('../controllers/tower.controller');
 const router = express.Router();
 const adminGuard = require('../middleware/adminGuard.middleware');
 const { verifyToken } = require('../middleware/auth.middleware');
 
-
+router.post("/checkIp", verifyToken, checkIpExists);
 router.post("/addTowers", verifyToken, addTower);
 router.get("/getTower", getTower);
 router.get('/getOneTower/:id', verifyToken, getTowerById);

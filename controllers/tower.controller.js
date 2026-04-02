@@ -15,6 +15,15 @@ exports.addTower = async (req, res) => {
       });
     }
 
+    // تحقق من عدم تكرار الـ IP
+    const existingTower = await Tower.findOne({ ip_address });
+    if (existingTower) {
+      return res.status(400).json({
+        success: false,
+        message: "هذا الـ IP مسجل بالفعل لبرج آخر!"
+      });
+    }
+
     // 2. إنشاء البرج في قاعدة البيانات
     const newTower = new Tower({
       TowerName,
@@ -22,6 +31,12 @@ exports.addTower = async (req, res) => {
       location,
       vendor,
       status: 'safe', // الحالة الافتراضية آمن
+      lastMeasurement: {
+        latency: 0,
+        packetLoss: 0,
+        throughput: 100,
+        jitter: 0
+      },
       lastCheck: new Date()
     });
 
@@ -48,6 +63,20 @@ exports.addTower = async (req, res) => {
   }
 };
 
+
+exports.checkIpExists = async (req, res) => {
+  try {
+    const { ip_address } = req.body;
+    if (!ip_address) return res.status(400).json({ success: false, message: "IP is required" });
+    const existingTower = await Tower.findOne({ ip_address });
+    if (existingTower) {
+      return res.json({ success: true, exists: true });
+    }
+    return res.json({ success: true, exists: false });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "خطأ في الاتصال بالخادم" });
+  }
+};
 
 exports.getTower = async (req, res) => {
   try {
@@ -82,18 +111,18 @@ exports.updateTowerByIP = async (req, res) => {
 
     // 1. تنظيف الأرقام
     const cleanStats = {
-      latency:    isNaN(latency)    ? 0 : Number(latency),
+      latency: isNaN(latency) ? 0 : Number(latency),
       throughput: isNaN(throughput) ? 0 : Number(throughput),
       packetLoss: isNaN(packetLoss) ? 0 : Number(packetLoss),
-      jitter:     isNaN(jitter)     ? 0 : Number(jitter),
+      jitter: isNaN(jitter) ? 0 : Number(jitter),
     };
 
     // 2. حساب الـ status الجديد فوراً بناءً على الأرقام
     //    نفس المنطق اللي في monitorService
     function computeStatus(m) {
-      if (m.latency > 300  || m.packetLoss > 15)  return 'danger';
+      if (m.latency > 300 || m.packetLoss > 15) return 'danger';
       if (m.latency >= 150 || m.packetLoss >= 10) return 'critical';
-      if (m.latency >= 80  || m.packetLoss >= 5)  return 'warning';
+      if (m.latency >= 80 || m.packetLoss >= 5) return 'warning';
       return 'safe';
     }
     const newStatus = computeStatus(cleanStats);
@@ -109,8 +138,8 @@ exports.updateTowerByIP = async (req, res) => {
       { ip_address },
       {
         lastMeasurement: cleanStats,
-        status:          newStatus,
-        lastCheck:       new Date(),
+        status: newStatus,
+        lastCheck: new Date(),
       },
       { new: true }
     );

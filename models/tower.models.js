@@ -27,8 +27,8 @@ const TowerSchema = new mongoose.Schema({
     lastMeasurement: {
         latency: Number,
         packetLoss: Number,
+        throughput: Number,
         jitter: Number,
-        throughput: Number
     },
     lastCheck: { type: Date }
 }, { timestamps: true });
