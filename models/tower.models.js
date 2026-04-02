@@ -16,7 +16,7 @@ const TowerSchema = new mongoose.Schema({
     },
     vendor: {
         type: String,
-        enum: ['Huawei', 'Cisco', 'Nokia', 'ZTE', 'Samsung'],
+        enum: ['Huawei', 'Cisco', 'Nokia', 'ZTE', 'Samsung' , 'Ericsson'],
         default: 'Cisco'
     },
     status: {
