@@ -13,12 +13,17 @@ exports.register = async (req, res) => {
     const salt = await bcryptjs.genSalt(10);
     const hashPass = await bcryptjs.hash(password, salt);
 
+    // المستخدم العادي يُفعَّل تلقائياً بدون موافقة الإدارة
+    const isNormalUser = section === "مستخدم عادي";
+
     user = new User({
       fullName,
       email,
       password: hashPass,
       phone,
       section,
+      isVerified: isNormalUser,
+      verificationStatus: isNormalUser ? "approved" : "pending",
     });
 
     await user.save();
@@ -112,3 +117,58 @@ exports.changePassword = async (req, res) => {
     }
 };
 
+// ===== Admin - إدارة المستخدمين =====
+
+// جلب كل المستخدمين غير الموثقين (لدور غير عادي)
+exports.getPendingUsers = async (req, res) => {
+    try {
+        const users = await User.find({
+            verificationStatus: "pending",
+            isAdmin: false,
+            section: { $ne: "مستخدم عادي" }
+        }).select("-password").sort({ createdAt: -1 });
+        res.status(200).json({ users });
+    } catch (error) {
+        res.status(500).json({ message: "حدث خطأ أثناء جلب المستخدمين" });
+    }
+};
+
+// جلب كل المستخدمين
+exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find({ isAdmin: false }).select("-password").sort({ createdAt: -1 });
+        res.status(200).json({ users });
+    } catch (error) {
+        res.status(500).json({ message: "حدث خطأ أثناء جلب المستخدمين" });
+    }
+};
+
+// الموافقة على مستخدم أو رفضه
+exports.verifyUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { action } = req.body; // "approve" | "reject" | "revoke"
+
+        let updateData;
+        let message;
+
+        if (action === "approve") {
+            updateData = { isVerified: true, verificationStatus: "approved" };
+            message = "تم قبول المستخدم بنجاح";
+        } else if (action === "reject") {
+            updateData = { isVerified: false, verificationStatus: "rejected" };
+            message = "تم رفض المستخدم";
+        } else if (action === "revoke") {
+            updateData = { isVerified: false, verificationStatus: "pending" };
+            message = "تم سحب اعتماد المستخدم";
+        } else {
+            return res.status(400).json({ message: "action غير صحيح" });
+        }
+
+        const user = await User.findByIdAndUpdate(id, updateData, { new: true }).select("-password");
+        if (!user) return res.status(404).json({ message: "المستخدم غير موجود" });
+        res.status(200).json({ message, user });
+    } catch (error) {
+        res.status(500).json({ message: "حدث خطأ أثناء التحديث" });
+    }
+};

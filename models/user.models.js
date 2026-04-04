@@ -29,10 +29,18 @@ const userSchema = new mongoose.Schema({
     type : Boolean,
     default : false
   },
+  isVerified : {
+    type : Boolean,
+    default : false
+  },
+  verificationStatus : {
+    type : String,
+    enum : ["pending", "approved", "rejected"],
+    default : "pending"
+  },
 
 } , {timestamps : true});
 
 const User = mongoose.model("User" , userSchema)
 
 module.exports = User
-
