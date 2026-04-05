@@ -172,3 +172,17 @@ exports.verifyUser = async (req, res) => {
         res.status(500).json({ message: "حدث خطأ أثناء التحديث" });
     }
 };
+
+// حذف مستخدم
+exports.deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedUser = await User.findByIdAndDelete(id);
+        if (!deletedUser) {
+            return res.status(404).json({ message: "المستخدم غير موجود" });
+        }
+        res.status(200).json({ message: "تم حذف المستخدم بنجاح" });
+    } catch (error) {
+        res.status(500).json({ message: "حدث خطأ أثناء الحذف" });
+    }
+};

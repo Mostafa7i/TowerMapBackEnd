@@ -59,6 +59,12 @@ const complaintSchema = new mongoose.Schema(
       default: "pending",
     },
 
+    isReadByAdmin: {
+      type: Boolean,
+      default: false,
+    },
+
+
     // ملاحظة الإدارة
     adminNote: {
       type: String,

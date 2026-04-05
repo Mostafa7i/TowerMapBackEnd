@@ -1,5 +1,5 @@
 const express = require("express");
-const { register, login, checkMe, logout, updateMe, changePassword, getPendingUsers, getAllUsers, verifyUser } = require("../controllers/user.control");
+const { register, login, checkMe, logout, updateMe, changePassword, getPendingUsers, getAllUsers, verifyUser, deleteUser } = require("../controllers/user.control");
 const {
   registerValid,
   loginValid,
@@ -21,5 +21,6 @@ router.patch("/changePassword", verifyToken, changePassword)
 router.get("/admin/users", verifyToken, adminGuard, getAllUsers);
 router.get("/admin/pending", verifyToken, adminGuard, getPendingUsers);
 router.patch("/admin/verify/:id", verifyToken, adminGuard, verifyUser);
+router.delete("/admin/users/:id", verifyToken, adminGuard, deleteUser);
 
 module.exports = router;

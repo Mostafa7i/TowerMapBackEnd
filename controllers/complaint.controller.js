@@ -67,3 +67,27 @@ exports.updateComplaintStatus = async (req, res) => {
     res.status(500).json({ message: "حدث خطأ أثناء التحديث" });
   }
 };
+
+// تحديد الشكوى كمقروءة
+exports.markComplaintAsRead = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // يمكننا جعلها تقرأ شكوى واحدة أو كل الشكاوى إذا كان id = 'all'
+    if (id === 'all') {
+      await Complaint.updateMany({ isReadByAdmin: false }, { isReadByAdmin: true });
+      return res.status(200).json({ message: "تم تحديد كل الشكاوى كمقروءة" });
+    }
+
+    const complaint = await Complaint.findByIdAndUpdate(
+      id,
+      { isReadByAdmin: true },
+      { new: true }
+    );
+    
+    if (!complaint) return res.status(404).json({ message: "الشكوى غير موجودة" });
+    res.status(200).json({ message: "تم تحديد الشكوى كمقروءة", complaint });
+  } catch (error) {
+    res.status(500).json({ message: "حدث خطأ أثناء التحديث" });
+  }
+};
