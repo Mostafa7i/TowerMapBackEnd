@@ -40,6 +40,7 @@ app.use("/api/auth", require("./routes/user.routes"));
 app.use("/api/ai", require("./routes/ai.route"));
 app.use("/api/towerMap", require("./routes/tower.route"));
 app.use("/api/complaints", require("./routes/complaint.route"));
+app.use("/api/towerIssues", require("./routes/towerIssue.route"));
 
 // اختبار  للتأكد أن السيرفر يعمل بعد الرفع
 app.get("/", (req, res) => res.json({ success: true, message: "Server is ready!" }));

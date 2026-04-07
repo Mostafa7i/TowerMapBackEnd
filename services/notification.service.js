@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 const twilio = require('twilio');
 const User = require('../models/user.models');
+const TowerIssue = require('../models/towerIssue.model');
 
 // ─── إعداد Nodemailer ────────────────────────────────────────────────────────
 const transporter = nodemailer.createTransport({
@@ -171,7 +172,33 @@ const notifyAdmins = async (tower, status = 'danger') => {
         }
 
         const meta = STATUS_META[status] || STATUS_META.danger;
-        console.log(`🚀 بدء إرسال الإشعارات — البرج: "${tower.TowerName}" — الحالة: ${meta.label.toUpperCase()}`);
+        console.log('🚀 بدء إرسال الإشعارات — البرج: "' + tower.TowerName + '" — الحالة: ' + meta.label.toUpperCase());
+
+        // ─── تسجيل المشكلة تلقائياً في قاعدة البيانات ───────────────────────
+        try {
+            const existingOpenIssue = await TowerIssue.findOne({
+                towerId: tower._id,
+                status: { $in: ['open', 'in_progress'] },
+                issueType: status,
+                createdAt: { $gte: new Date(Date.now() - 30 * 60 * 1000) }
+            });
+            if (!existingOpenIssue) {
+                await TowerIssue.create({
+                    towerId: tower._id,
+                    towerName: tower.TowerName,
+                    issueType: status,
+                    title: meta.emoji + ' تنبيه تلقائي: برج ' + tower.TowerName + ' في حالة ' + meta.label,
+                    description: 'تم اكتشاف مشكلة تلقائياً من نظام المراقبة.\nLatency: ' + (tower.lastMeasurement && tower.lastMeasurement.latency !== undefined ? tower.lastMeasurement.latency : 'N/A') + ' ms | Packet Loss: ' + (tower.lastMeasurement && tower.lastMeasurement.packetLoss !== undefined ? tower.lastMeasurement.packetLoss : 'N/A') + '%',
+                    measurements: tower.lastMeasurement,
+                    priority: status === 'danger' ? 'critical' : 'high',
+                    createdByName: 'النظام التلقائي',
+                    status: 'open',
+                });
+                console.log('📋 تم تسجيل مشكلة تلقائية لبرج ' + tower.TowerName);
+            }
+        } catch (issueErr) {
+            console.error('❌ فشل تسجيل المشكلة:', issueErr.message);
+        }
 
         // إرسال الثلاث قنوات بالتوازي
         await Promise.allSettled([
@@ -180,7 +207,7 @@ const notifyAdmins = async (tower, status = 'danger') => {
             sendWhatsAppAlert(tower, admins, status)
         ]);
 
-        console.log(`✅ اكتمل إرسال جميع الإشعارات للبرج "${tower.TowerName}".`);
+        console.log('✅ اكتمل إرسال جميع الإشعارات للبرج ' + tower.TowerName);
     } catch (error) {
         console.error('❌ حدث خطأ أثناء إعلام المديرين:', error.message);
     }
