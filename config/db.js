@@ -29,6 +29,9 @@ let usingLocalDB = false;
 
 const triggerLocalFallback = async () => {
     if (usingLocalDB) return; // منع التكرار إذا كنا أصلاً على المحلي
+    const isCloudDeployed = process.env.NODE_ENV === 'production' || process.env.VERCEL || process.env.RENDER;
+    if (isCloudDeployed) return;
+    
     usingLocalDB = true;
     console.log("⚠️ Connection to primary DB dropped! Triggering instant local fallback...");
     try {
@@ -62,8 +65,9 @@ const connectDB = async() =>{
         
         console.log("Checking internet connectivity securely...");
         const isOnline = await checkInternet();
+        const isCloudDeployed = process.env.NODE_ENV === 'production' || process.env.VERCEL || process.env.RENDER;
         
-        if (!isOnline) {
+        if (!isOnline && !isCloudDeployed) {
             console.log("No true internet connection detected! Instantly falling back to local database...");
             usingLocalDB = true;
             const localDbUrl = process.env.LOCAL_DB_URL || "mongodb://127.0.0.1:27017/tower";
