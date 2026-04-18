@@ -58,6 +58,11 @@ exports.login = async (req, res) => {
         if (!user) return res.status(400).send({ message: "Invalid email or password" });
         const isMatch = await bcryptjs.compare(password, user.password);
         if (!isMatch) return res.status(400).send({ message: "Invalid email or password" });
+        
+        // تحديث وقت آخر نشاط عند تسجيل الدخول
+        user.lastActive = new Date();
+        await user.save();
+
         const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET || "default_secret_key", { expiresIn: "7d" });
         res.cookie("access_token", token, {
             httpOnly: true,
