@@ -9,8 +9,19 @@ const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const app = express();
 
-// الاتصال بقاعدة البيانات
-connectDB();
+// بدء الاتصال بشكل أولي
+connectDB().catch(err => console.error("Initial DB Connection Error:", err.message));
+
+// تأكيد الاتصال قبل الاستجابة لأي طلب في بيئات Serverless
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (error) {
+        console.error("DB Connection Error in Middleware:", error);
+        res.status(500).json({ success: false, message: "فشل الاتصال بقاعدة البيانات" });
+    }
+});
 
 app.use(cookie());
 app.use(express.json());

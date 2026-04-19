@@ -59,33 +59,54 @@ mongoose.connection.on('disconnected', () => {
     }
 });
 
+let isConnected = false;
+
 const connectDB = async() =>{
+    if (isConnected || mongoose.connection.readyState >= 1) {
+        isConnected = true;
+        return;
+    }
     try {
         console.log("DB URL exists:", !!process.env.CONNECTDB_URL);
         
-        console.log("Checking internet connectivity securely...");
-        const isOnline = await checkInternet();
         const isCloudDeployed = process.env.NODE_ENV === 'production' || process.env.VERCEL || process.env.RENDER;
+        
+        let isOnline = true;
+        if (!isCloudDeployed) {
+            console.log("Checking internet connectivity securely...");
+            isOnline = await checkInternet();
+        }
         
         if (!isOnline && !isCloudDeployed) {
             console.log("No true internet connection detected! Instantly falling back to local database...");
             usingLocalDB = true;
             const localDbUrl = process.env.LOCAL_DB_URL || "mongodb://127.0.0.1:27017/tower";
-            await mongoose.connect(localDbUrl);
+            await mongoose.connect(localDbUrl, { serverSelectionTimeoutMS: 5000 });
+            isConnected = true;
             console.log(`Connected to local fallback database successfully 🟡🟡🟡`);
             return;
         }
 
-        console.log("Internet verified. Attempting to connect to primary database...");
+        console.log("Ensure DB URL exists:", !!process.env.CONNECTDB_URL);
+        console.log("Attempting to connect to primary database...");
         await mongoose.connect(process.env.CONNECTDB_URL, {
-            serverSelectionTimeoutMS: 5000 // 5 seconds timeout
+            serverSelectionTimeoutMS: 15000, // 15 seconds timeout
+            socketTimeoutMS: 45000
         });
+        isConnected = true;
         console.log(`The primary database is connected successfully 🟢🟢🟢`);
         
     } catch (error) {
         console.error(`Error connecting to primary DB, attempting local fallback... >> ${error.message}`);
+        
+        const isCloudDeployed = process.env.NODE_ENV === 'production' || process.env.VERCEL || process.env.RENDER;
+        if (isCloudDeployed) {
+            // Throw error to the middleware on Vercel so it responds with 500 instead of hanging
+            throw new Error("Failed to connect to the primary database on Cloud.");
+        }
+
         usingLocalDB = false; // Reset to allow triggerLocalFallback to work
-        triggerLocalFallback();
+        await triggerLocalFallback();
     }
 }
 module.exports = connectDB;
